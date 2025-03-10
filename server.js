@@ -5,6 +5,7 @@ const methodOverride = require("method-override");
 const morgan = require("morgan");
 const dotenv = require("dotenv");
 const authController = require("./controllers/auth");
+const session = require('express-session');
 
 // init express app
 const app = express();
@@ -23,12 +24,22 @@ mongoose.connection.on("connected", () => {
 app.use(express.urlencoded({ extended: false }));
 app.use(methodOverride("_method"));
 app.use(morgan('dev'));
+app.use(
+    session({
+        secret: process.env.SESSION_SECRET,
+        resave: false,
+        saveUninitialized: false,
+    })
+);
 app.use("/auth", authController);
 
 // mount routes
-app.get('/', (req, res) => {
-    res.render('index.ejs');
+app.get("/", (req, res) => {
+    res.render("index.ejs", {
+        user: req.session.user,
+    });
 });
+
 
 // tell the app to listen
 app.listen(port, () => {
