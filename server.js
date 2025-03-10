@@ -40,6 +40,17 @@ app.get("/", (req, res) => {
     });
 });
 
+// protected route - user must be logged in for access
+app.get("/vip-lounge", (req, res) => {
+    if (req.session.user) {
+        res.send(`Welcome to the party ${req.session.user.username}.`);
+    } else {
+        res.send("Sorry, no guests allowed.");
+    }
+});
+
+
+
 
 // tell the app to listen
 app.listen(port, () => {
