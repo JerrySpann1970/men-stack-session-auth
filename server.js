@@ -6,13 +6,26 @@ const morgan = require("morgan");
 const dotenv = require("dotenv");
 
 // init express app
+const app = express();
 
 // configure settings
+dotenv.config();
+const port = process.env.PORT ? process.env.PORT : "3000";
 
 // connect to mongoDB
+mongoose.connect(process.env.MONGODB_URI);
+mongoose.connection.on("connected", () => {
+    console.log(`Connected to MongoDB ${mongoose.connection.name}.`);
+});
 
 // mount middleware
+app.use(express.urlencoded({ extended: false }));
+app.use(methodOverride("_method"));
+app.use(morgan('dev'));
 
 // mount routes
 
 // tell the app to listen
+app.listen(port, () => {
+    console.log(`The express app is ready on port ${port}!`);
+});
